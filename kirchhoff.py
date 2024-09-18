@@ -107,8 +107,8 @@ def draw_circuit_schaltung1(canvas):
 
     # Canvas zurücksetzen
     canvas.delete("all")
-    entry_r5.state = tk.DISABLED
-    entry_r4.state = tk.DISABLED
+    entry_r5.pack_forget()
+    entry_r4.pack_forget()
 
     # Knoten zeichnen (gelbe Punkte)
     canvas.create_oval(45, 45, 55, 55, fill="yellow")  # Knoten 1
@@ -161,8 +161,10 @@ def draw_circuit_schaltung2(canvas):
     shift_x=-75
     shift_y=-130
     canvas.delete("all")
-    entry_r5.state = tk.NORMAL
-    entry_r4.state = tk.NORMAL
+    ohm4.pack()
+    ohm5.pack()
+    entry_r5.pack()
+    entry_r4.pack()
 
     # Knoten zeichnen (gelbe Punkte)
 
@@ -262,13 +264,13 @@ tk.Label(root, text="R3 (Ohm):").pack()
 entry_r3 = tk.Entry(root)
 entry_r3.pack()
 
-tk.Label(root, text="R4 (Ohm):").pack()
+ohm4=tk.Label(root, text="R4 (Ohm):")
 entry_r4 = tk.Entry(root)
-entry_r4.pack()
 
-tk.Label(root, text="R5 (Ohm):").pack()
+
+ohm5=tk.Label(root, text="R5 (Ohm):")
 entry_r5 = tk.Entry(root)
-entry_r5.pack()
+
 
 tk.Label(root, text="Spannungsquelle (V):").pack()
 entry_voltage = tk.Entry(root)
