@@ -81,15 +81,38 @@ def display_matrix_schaltung1():
         R3 = float(entry_r3.get().strip())
         V1 = float(entry_voltage1.get().strip())
 
+        # Koeffizientenmatrix A
+        A = np.array([[R1 + R2, -R2],
+                      [-R2, R2 + R3]])
+
+        # Rechte Seite b
+        b = np.array([V1, 0])
+
+        # Lösung des Gleichungssystems A * x = b
+        x = np.linalg.solve(A, b)
+
         # Formatierte Darstellung mit festen Spaltenbreiten
         matrix_str = (
             "Matrix-Gleichung des Maschenstromverfahrens:\n\n"
             f"[{R1 :<8.2f} + {R2:<8.2f}, {-R2:<8.2f}]  * [I1]   =   [{V1:<5.2f}]\n"
             f"[{-R2:<8.2f}, {R2:<8.2f} + {R3:<8.2f}]    [I2]       [0]\n\n"
+            
+            "Maschenströme:\n"
+            f"I1={x[0]:.3f} A\n"
+            f"I2={x[1]:.3f} A\n\n"
+            
+            "Knotenpotenziale:\n"
+            f"K1=0 V\n"
+            f"K2={V1:<5.3f} V\n"
+            f"K3={V1-(R3*x[1]):<5.3f} V\n"
+            f"K4={V1:<5.3f} V\n"
+            f"K5={V1:<5.3f} V\n"
+            f"K6={V1:<5.3f} V\n"
         )
 
 
-        # Darstellung der Matrix im Textfeld
+
+
 
 
         matrix_display.config(state=tk.NORMAL)
@@ -115,11 +138,33 @@ def display_matrix_schaltung4():
         V1 = float(entry_voltage1.get().strip())
         V2 = float(entry_voltage2.get().strip())
 
+        # Koeffizientenmatrix A
+        A = np.array([[R1 + R2, R2],
+                      [R2, R2 + R3]])
+
+        # Rechte Seite b
+        b = np.array([V1, V2])
+
+        # Lösung des Gleichungssystems A * x = b
+        x = np.linalg.solve(A, b)
         # Formatierte Darstellung mit festen Spaltenbreiten
+        VR3=R3*x[1]
         matrix_str = (
             "Matrix-Gleichung des Maschenstromverfahrens:\n\n"
             f"[{R1 :<8.2f} + {R2:<8.2f}, {R2:<8.2f}]  * [I1]   =   [{V1:<5.2f}]\n"
             f"[{R2:<8.2f}, {R2:<8.2f} + {R3:<8.2f}]    [I2]       [{V2:<5.2f}]\n\n"
+
+            "Maschenströme:\n"
+            f"I1={x[0]:.3f} A\n"
+            f"I2={x[1]:.3f} A\n\n"
+
+            "Knotenpotenziale:\n"
+            f"K1={VR3:<5.3f} V\n"
+            f"K2={VR3:<5.3f} V\n"
+            f"K3=0 V\n"
+            f"K4={V1+VR3:<5.3f} V\n"
+            f"K5={V2:<5.3f} V\n"
+            f"K6={V2:<5.3f} V\n"
         )
 
 
@@ -143,14 +188,41 @@ def display_matrix_schaltung3():
             R4 = float(entry_r4.get().strip())
             R5 = float(entry_r6.get().strip())
             R6 = float(entry_r6.get().strip())
-            V1 = float(entry_voltage1.get().strip())
+            V1 = float(entry_voltage1.get())
 
+            # Koeffizientenmatrix A
+            A = np.array([[R1+R2+R3, -R2,-R4],
+                          [-R2, R2+R4+R5,-R3],
+                          [-R4,-R3,R6+R3+R4]])
+
+            # Rechte Seite b
+            b = np.array([V1, 0,0])
+
+            # Lösung des Gleichungssystems A * x = b
+            x = np.linalg.solve(A, b)
             # Formatierte Darstellung mit festen Spaltenbreiten
+            VR2=(x[0]-x[1])*R2
+            K69=V1-(x[1]*R5)
             matrix_str = (
                 "Matrix-Gleichung des Maschenstromverfahrens:\n\n"
                 f"[{R1 :<8.2f} + {R2:<8.2f} + {R3:<8.2f}, {-R2:<8.2f},{-R4:<8.2f}]  * [I1]   =   [{V1:<5.2f}]\n"
                 f"[{-R2:<8.2f}, {R2:<8.2f} + {R4:<8.2f} + {R5:<8.2f},{-R3:<8.2f}]    [I2]       [0]\n"
                 f"[{-R4:<8.2f}, {-R3:<8.2f},{R6:<8.2f} + {R4:<8.2f} + {R3:<8.2f}]    [I3]       [0]\n\n"
+                "Maschenströme:\n"
+                f"I1={x[0]:.3f} A\n"
+                f"I2={x[1]:.3f} A\n"
+                f"I3={x[2]:.3f} A\n\n"
+
+                "Knotenpotenziale:\n"
+                f"K1=0 V\n"
+                f"K2={V1:<5.3f} V\n"
+                f"K3={V1:<5.3f} V\n"
+                f"K4={V1 - (x[0]*R1):<5.3f} V\n"
+                f"K5={V1-VR2:<5.3f} V\n"
+                f"K6={K69:<5.3f} V\n"
+                f"K7={V1 :<5.3f} V\n"
+                f"K8={K69-(x[2]*R6):<5.3f} V\n"
+                f"K9={K69:<5.3f} V\n"
             )
 
             # Darstellung der Matrix im Textfeld
@@ -217,8 +289,8 @@ def draw_circuit_schaltung1(canvas):
     canvas.create_line(50, 55, 50, 245, fill="red", width=3)
     canvas.create_line(50, 80, 60, 80, fill="red", width=3)
     canvas.create_line(50, 220, 60, 220, fill="red", width=3)
-    canvas.create_text(35, 70, text="(+)", fill="red")
-    canvas.create_text(35, 230, text="(-)", fill="red")
+    canvas.create_text(35, 70, text="(-)", fill="red")
+    canvas.create_text(35, 230, text="(+)", fill="red")
 
     # Verbindungslinien (blau)
     canvas.create_line(55, 50, 95, 50, fill="blue", width=3)  # knoten 1 zu
@@ -569,7 +641,7 @@ def draw_circuit_schaltung4(canvas):
 # Hauptfenster und die restliche Logik bleibt unverändert
 root = tk.Tk()
 root.title("Schaltungssimulation mit visueller Darstellung und Matrixberechnung")
-root.geometry("1050x550")
+root.geometry("1070x550")
 
 # Canvas für die Schaltung (größerer Canvas)
 canvas = tk.Canvas(root, width=400, height=300, bg="gray")
@@ -634,7 +706,7 @@ entry_voltage2 = tk.Entry(root)
 
 
 # Textfeld zur Anzeige der Matrix
-matrix_display = tk.Text(root, height=16, width=40)
+matrix_display = tk.Text(root, height=16, width=74)
 matrix_display.place(x=450, y=0)
 
 # Starte das Hauptfenster
