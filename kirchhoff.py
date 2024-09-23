@@ -3,6 +3,18 @@ from tkinter import messagebox
 import numpy as np
 import math
 
+def berechne_knotenpotenziale(I1, I2, R1, R2, R3, V1):
+    # Setze Knoten 1 als Referenzknoten mit Potenzial 0
+    V1 = 0
+
+    # Berechne Knotenpotenzial V2
+    V2 = V1 + I1 * R1
+
+    # Berechne Knotenpotenzial V3 entweder über R2 oder R3
+    V3_via_R2 = V2 + I2 * R2
+    V3_via_R3 = V1 + I1 * R3  # Alternativ über R3
+
+    return V1, V2, V3_via_R2, V3_via_R3
 
 def draw_rect_between(canvas, x1, y1, x2, y2, rect_width, rect_height):
     mid_x = (x1 + x2) / 2
