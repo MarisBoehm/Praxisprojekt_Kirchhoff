@@ -3,6 +3,29 @@ from tkinter import messagebox
 import numpy as np
 import math
 
+current_circuit = None
+
+def set_current_circuit(circuit_number):
+    global current_circuit
+    current_circuit = circuit_number
+
+def berechnen():
+    global current_circuit
+    if current_circuit == 1:
+        display_matrix_schaltung1()
+        draw_circuit_schaltung1(canvas)
+    elif current_circuit == 2:
+        display_matrix_schaltung2()
+        draw_circuit_schaltung2(canvas)
+    elif current_circuit == 3:
+        display_matrix_schaltung3()
+        draw_circuit_schaltung3(canvas)
+    elif current_circuit == 4:
+        display_matrix_schaltung4()
+        draw_circuit_schaltung4(canvas)
+    else:
+        messagebox.showerror("Fehler", "Keine Schaltung ausgewählt!")
+
 def berechne_knotenpotenziale(I1, I2, R1, R2, R3, V1):
     # Setze Knoten 1 als Referenzknoten mit Potenzial 0
     V1 = 0
@@ -103,6 +126,10 @@ def display_matrix_schaltung1():
         # Lösung des Gleichungssystems A * x = b
         x = np.linalg.solve(A, b)
 
+        IR1=x[0]
+        IR3=x[1]
+        IR2=IR1-IR3
+
         # Formatierte Darstellung mit festen Spaltenbreiten
         matrix_str = (
             "Matrix-Gleichung des Maschenstromverfahrens:\n\n"
@@ -113,10 +140,10 @@ def display_matrix_schaltung1():
             f"I1={x[0]:.3f} A\n"
             f"I2={x[1]:.3f} A\n\n"
             
-            "Knotenpotenziale:\n"
-            f"K1=0 V\n"
-            f"K2={V1:<5.3f} V\n"
-            f"K3={V1-(R3*x[1]):<5.3f} V\n"
+            f"Knotenpotenziale:{'':<16.2} Ströme durch die Widerstände:\n"
+            f"K1=0 V          {'':16.2} IR1={IR1:<8.3f} A\n"
+            f"K2={V1:<5.3f} V      {'':<16.2}IR2={IR2:<8.3f} A\n"
+            f"K3={V1-(R3*x[1]):<5.3f} V       {'':<16.2}IR3={IR3:<8.3f} A\n"
             f"K4={V1:<5.3f} V\n"
             f"K5={V1:<5.3f} V\n"
             f"K6={V1:<5.3f} V\n"
@@ -137,7 +164,7 @@ def display_matrix_schaltung1():
     except np.linalg.LinAlgError:
         messagebox.showerror("Fehler", "Matrix ist singulär und kann nicht gelöst werden.")
     except ValueError as e:
-        messagebox.showerror("Fehler", f"Bitte geben Sie gültige Zahlen ein.")
+        messagebox.showerror("Fehler", f"Bitte geben Sie gültige Zahlen ein.{str(e)}")
     except Exception as e:
         messagebox.showerror("Fehler", f"Ein Fehler ist aufgetreten: {str(e)}")
 
@@ -160,6 +187,11 @@ def display_matrix_schaltung4():
         # Lösung des Gleichungssystems A * x = b
         x = np.linalg.solve(A, b)
         # Formatierte Darstellung mit festen Spaltenbreiten
+        IM1=x[0]
+        IM2=x[1]
+        IR1=IM1
+        IR2=IM1+IM2
+        IR3=IM2
         VR3=R3*x[1]
         matrix_str = (
             "Matrix-Gleichung des Maschenstromverfahrens:\n\n"
@@ -170,9 +202,10 @@ def display_matrix_schaltung4():
             f"I1={x[0]:.3f} A\n"
             f"I2={x[1]:.3f} A\n\n"
 
-            "Knotenpotenziale:\n"
-            f"K1={VR3:<5.3f} V\n"
-            f"K2={VR3:<5.3f} V\n"
+            f"Knotenpotenziale:{'':<16.2} Ströme durch die Widerstände:\n"
+            f"K1=0 V           {'':16.2} IR1={IR1:<8.3f} A\n"
+            f"K1={VR3:<5.3f} V       {'':16.2} IR2={IR2:<8.3f} A\n"
+            f"K2={VR3:<5.3f} V       {'':16.2} IR3={IR3:<8.3f} A\n"
             f"K3=0 V\n"
             f"K4={V1+VR3:<5.3f} V\n"
             f"K5={V2:<5.3f} V\n"
@@ -198,40 +231,51 @@ def display_matrix_schaltung3():
             R2 = float(entry_r2.get().strip())
             R3 = float(entry_r3.get().strip())
             R4 = float(entry_r4.get().strip())
-            R5 = float(entry_r6.get().strip())
+            R5 = float(entry_r5.get().strip())
             R6 = float(entry_r6.get().strip())
             V1 = float(entry_voltage1.get())
 
             # Koeffizientenmatrix A
-            A = np.array([[R1+R2+R3, -R2,-R4],
-                          [-R2, R2+R4+R5,-R3],
-                          [-R4,-R3,R6+R3+R4]])
+            A = np.array([[R1+R2+R3, -R2,-R3],
+                          [-R2, R2+R4+R5,-R4],
+                          [-R3,-R4,R6+R3+R4]])
 
+            print(A)
             # Rechte Seite b
             b = np.array([V1, 0,0])
-
+            print(b)
             # Lösung des Gleichungssystems A * x = b
             x = np.linalg.solve(A, b)
+            print(x)
             # Formatierte Darstellung mit festen Spaltenbreiten
+            IM1=x[0]
+            IM2=x[1]
+            IM3=x[2]
+            IR1=IM1
+            IR2=IM1-IM2
+            IR3=IM1-IM3
+            IR4=IM2-IM3
+            IR5=IM2
+            IR6=IM3
             VR2=(x[0]-x[1])*R2
             K69=V1-(x[1]*R5)
             matrix_str = (
                 "Matrix-Gleichung des Maschenstromverfahrens:\n\n"
-                f"[{R1 :<8.2f} + {R2:<8.2f} + {R3:<8.2f}, {-R2:<8.2f},{-R4:<8.2f}]  * [I1]   =   [{V1:<5.2f}]\n"
-                f"[{-R2:<8.2f}, {R2:<8.2f} + {R4:<8.2f} + {R5:<8.2f},{-R3:<8.2f}]    [I2]       [0]\n"
-                f"[{-R4:<8.2f}, {-R3:<8.2f},{R6:<8.2f} + {R4:<8.2f} + {R3:<8.2f}]    [I3]       [0]\n\n"
+                f"[{R1 :<8.2f} + {R2:<8.2f} + {R3:<8.2f}, {-R2:<8.2f},{-R3:<8.2f}]  * [I1]   =   [{V1:<5.2f}]\n"
+                f"[{-R2:<8.2f}, {R2:<8.2f} + {R4:<8.2f} + {R5:<8.2f},{-R4:<8.2f}]    [I2]       [0]\n"
+                f"[{-R3:<8.2f}, {-R4:<8.2f},{R6:<8.2f} + {R4:<8.2f} + {R3:<8.2f}]    [I3]       [0]\n\n"
                 "Maschenströme:\n"
                 f"I1={x[0]:.3f} A\n"
                 f"I2={x[1]:.3f} A\n"
                 f"I3={x[2]:.3f} A\n\n"
 
-                "Knotenpotenziale:\n"
-                f"K1=0 V\n"
-                f"K2={V1:<5.3f} V\n"
-                f"K3={V1:<5.3f} V\n"
-                f"K4={V1 - (x[0]*R1):<5.3f} V\n"
-                f"K5={V1-VR2:<5.3f} V\n"
-                f"K6={K69:<5.3f} V\n"
+                f"Knotenpotenziale:{'':<16.2} Ströme durch die Widerstände:\n"
+                f"K1=0 V          {'':16.2} IR1={IR1:<8.3f} A\n"
+                f"K2={V1:<5.3f} V      {'':16.2} IR2={IR2:<8.3f} A\n"
+                f"K3={V1:<5.3f} V      {'':16.2} IR3={IR3:<8.3f} A\n"
+                f"K4={(x[0]*R1):<5.3f} V      {'':16.2} IR4={IR4:<8.3f} A\n"
+                f"K5={V1-VR2:<5.3f} V      {'':16.2} IR5={IR5:<8.3f} A\n"
+                f"K6={K69:<5.3f} V      {'':16.2} IR6={IR6:<8.3f} A\n"
                 f"K7={V1 :<5.3f} V\n"
                 f"K8={K69-(x[2]*R6):<5.3f} V\n"
                 f"K9={K69:<5.3f} V\n"
@@ -249,14 +293,80 @@ def display_matrix_schaltung3():
         except np.linalg.LinAlgError:
             messagebox.showerror("Fehler", "Matrix ist singulär und kann nicht gelöst werden.")
         except ValueError as e:
-            messagebox.showerror("Fehler", f"Bitte geben Sie gültige Zahlen ein. Fehler: {str(e)}")
+            messagebox.showerror("Fehler", f"Bitte geben Sie gültige Zahlen ein.")
         except Exception as e:
             messagebox.showerror("Fehler", f"Ein Fehler ist aufgetreten: {str(e)}")
+def display_matrix_schaltung2():
+    try:
+        # Werte aus den Eingabefeldern holen und in float umwandeln
+        R1 = float(entry_r1.get().strip())
+        R2 = float(entry_r2.get().strip())
+        R3 = float(entry_r3.get().strip())
+        R4 = float(entry_r4.get().strip())
+        R5 = float(entry_r5.get().strip())
+        V1 = float(entry_voltage1.get())
 
+        # Koeffizientenmatrix A
+        A = np.array([[R1 + R4, -R4, -R1],
+                      [-R4, R3 + R4 + R5, -R5],
+                      [-R1, -R5,R2 + R1 + R5]])
+
+        print(A)
+        # Rechte Seite b
+        b = np.array([V1, 0, 0])
+        print(b)
+        # Lösung des Gleichungssystems A * x = b
+        x = np.linalg.solve(A, b)
+        print(x)
+        # Formatierte Darstellung mit festen Spaltenbreiten
+        IM1=x[0]
+        IM2=x[1]
+        IM3=x[2]
+        IR1=IM1-IM3
+        IR2=IM3
+        IR3=IM2
+        IR4=IM1-IM2
+        IR5=IM3-IM2
+        VR1=IR1*R1
+        matrix_str = (
+            "Matrix-Gleichung des Maschenstromverfahrens:\n\n"
+            f"[{R1 :<8.2f} + {R4:<16.4f}, {-R4:<8.2f},{-R5:<8.2f}]     * [I1]   =   [{V1:<5.2f}]\n"
+            f"[{-R4:<8.2f}, {R3:<8.2f} + {R4:<8.2f} + {R5:<8.2f},{-R1:<8.2f}]    [I2]       [0]\n"
+            f"[{-R5:<8.2f}, {-R1:<8.2f},{R5:<8.2f} + {R2:<8.2f} + {R1:<8.2f}]    [I3]       [0]\n\n"
+            "Maschenströme:\n"
+            f"I1={x[0]:.3f} A\n"
+            f"I2={x[1]:.3f} A\n"
+            f"I3={x[2]:.3f} A\n\n"
+
+            f"Knotenpotenziale:{'':<16.2} Ströme durch die Widerstände:\n"
+            f"K1=0 V          {'':16.2} IR1={IR1:<8.3f} A\n"
+            f"K2=0 V          {'':16.2} IR2={IR2:<8.3f} A\n"
+            f"K3={VR1:<5.3f} V      {'':16.2} IR3={IR3:<8.3f} A\n"
+            f"K4={(x[2]*R2):<5.3f} V      {'':16.2} IR4={IR4:<8.3f} A\n"
+            f"K5={V1:<5.3f} V     {'':16.2} IR5={IR5:<8.3f} A\n"
+            f"K6={V1:<5.3f} V\n"
+
+        )
+
+        # Darstellung der Matrix im Textfeld
+
+        matrix_display.config(state=tk.NORMAL)
+        matrix_display.delete(1.0, tk.END)
+        matrix_display.insert(tk.END, matrix_str)
+        matrix_display.config(state=tk.DISABLED)
+
+
+
+    except np.linalg.LinAlgError:
+        messagebox.showerror("Fehler", "Matrix ist singulär und kann nicht gelöst werden.")
+    except ValueError as e:
+        messagebox.showerror("Fehler", f"Bitte geben Sie gültige Zahlen ein. Fehler: {str(e)}")
+    except Exception as e:
+        messagebox.showerror("Fehler", f"Ein Fehler ist aufgetreten: {str(e)}")
 
 # Funktion zum Zeichnen der Schaltung 1 auf dem Canvas
 def draw_circuit_schaltung1(canvas):
-    display_matrix_schaltung1()
+    set_current_circuit(1)
     # Canvas zurücksetzen
     canvas.delete("all")
     entry_r2.place(x=135, y=380)
@@ -346,6 +456,8 @@ def draw_circuit_schaltung2(canvas):
     shift_x=-75
     shift_y=-130
     canvas.delete("all")
+
+    set_current_circuit(2)
 
     entry_r2.place(x=135, y=380)
     entry_r1.place(x=24, y=380)
@@ -441,7 +553,7 @@ def draw_circuit_schaltung2(canvas):
     canvas.create_text(270+shift_x, 390+shift_y, text=f"U1 = {entry_voltage1.get()} V", fill="red")  # Spannungen
 
 def draw_circuit_schaltung3(canvas):
-    display_matrix_schaltung3()
+    set_current_circuit(3)
     canvas.delete("all")  # Zurücksetzen des Canvas
 
     shift_x = -30  # Horizontaler Versatz
@@ -560,7 +672,7 @@ def draw_circuit_schaltung3(canvas):
 
 def draw_circuit_schaltung4(canvas):
     # Canvas zurücksetzen
-    display_matrix_schaltung4()
+    set_current_circuit(4)
     canvas.delete("all")
     entry_r2.place(x=135, y=380)
     entry_r1.place(x=24, y=380)
@@ -713,13 +825,15 @@ entry_voltage2 = tk.Entry(root)
 
 
 
-# Button zum Berechnen der Matrix für Schaltung 1
+# Button zum Berechnen der Matrix
+btn_berechnen = tk.Button(root, text="Berechnen", command=berechnen,width=71,height=5)
+btn_berechnen.place(x=460, y=420)
 
 
 
 # Textfeld zur Anzeige der Matrix
-matrix_display = tk.Text(root, height=16, width=74)
-matrix_display.place(x=450, y=0)
+matrix_display = tk.Text(root, height=24, width=74)
+matrix_display.place(x=460, y=0)
 
 # Starte das Hauptfenster
 root.mainloop()
