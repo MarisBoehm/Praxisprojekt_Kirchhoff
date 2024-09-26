@@ -141,9 +141,9 @@ def display_matrix_schaltung1():
             f"I2={x[1]:.3f} A\n\n"
             
             f"Knotenpotenziale:{'':<16.2} Ströme durch die Widerstände:\n"
-            f"K1=0 V          {'':16.2} IR1={IR1:<8.3f} A\n"
-            f"K2={V1:<5.3f} V      {'':<16.2}IR2={IR2:<8.3f} A\n"
-            f"K3={V1-(R3*x[1]):<5.3f} V       {'':<16.2}IR3={IR3:<8.3f} A\n"
+            f"K1=0 V           {'':16.2} IR1={IR1:<8.3f} A\n"
+            f"K2={V1:<5.3f} V       {'':<16.2}IR2={IR2:<8.3f} A\n"
+            f"K3={V1-(R3*x[1]):<5.3f} V        {'':<16.2}IR3={IR3:<8.3f} A\n"
             f"K4={V1:<5.3f} V\n"
             f"K5={V1:<5.3f} V\n"
             f"K6={V1:<5.3f} V\n"
@@ -204,8 +204,8 @@ def display_matrix_schaltung4():
 
             f"Knotenpotenziale:{'':<16.2} Ströme durch die Widerstände:\n"
             f"K1=0 V           {'':16.2} IR1={IR1:<8.3f} A\n"
-            f"K1={VR3:<5.3f} V       {'':16.2} IR2={IR2:<8.3f} A\n"
-            f"K2={VR3:<5.3f} V       {'':16.2} IR3={IR3:<8.3f} A\n"
+            f"K1={VR3:<5.3f} V      {'':16.2} IR2={IR2:<8.3f} A\n"
+            f"K2={VR3:<5.3f} V      {'':16.2} IR3={IR3:<8.3f} A\n"
             f"K3=0 V\n"
             f"K4={V1+VR3:<5.3f} V\n"
             f"K5={V2:<5.3f} V\n"
@@ -270,12 +270,12 @@ def display_matrix_schaltung3():
                 f"I3={x[2]:.3f} A\n\n"
 
                 f"Knotenpotenziale:{'':<16.2} Ströme durch die Widerstände:\n"
-                f"K1=0 V          {'':16.2} IR1={IR1:<8.3f} A\n"
+                f"K1=0 V           {'':16.2} IR1={IR1:<8.3f} A\n"
                 f"K2={V1:<5.3f} V      {'':16.2} IR2={IR2:<8.3f} A\n"
                 f"K3={V1:<5.3f} V      {'':16.2} IR3={IR3:<8.3f} A\n"
-                f"K4={(x[0]*R1):<5.3f} V      {'':16.2} IR4={IR4:<8.3f} A\n"
-                f"K5={V1-VR2:<5.3f} V      {'':16.2} IR5={IR5:<8.3f} A\n"
-                f"K6={K69:<5.3f} V      {'':16.2} IR6={IR6:<8.3f} A\n"
+                f"K4={(x[0]*R1):<5.3f} V       {'':16.2} IR4={IR4:<8.3f} A\n"
+                f"K5={V1-VR2:<5.3f} V       {'':16.2} IR5={IR5:<8.3f} A\n"
+                f"K6={K69:<5.3f} V       {'':16.2} IR6={IR6:<8.3f} A\n"
                 f"K7={V1 :<5.3f} V\n"
                 f"K8={K69-(x[2]*R6):<5.3f} V\n"
                 f"K9={K69:<5.3f} V\n"
@@ -339,11 +339,11 @@ def display_matrix_schaltung2():
             f"I3={x[2]:.3f} A\n\n"
 
             f"Knotenpotenziale:{'':<16.2} Ströme durch die Widerstände:\n"
-            f"K1=0 V          {'':16.2} IR1={IR1:<8.3f} A\n"
-            f"K2=0 V          {'':16.2} IR2={IR2:<8.3f} A\n"
-            f"K3={VR1:<5.3f} V      {'':16.2} IR3={IR3:<8.3f} A\n"
-            f"K4={(x[2]*R2):<5.3f} V      {'':16.2} IR4={IR4:<8.3f} A\n"
-            f"K5={V1:<5.3f} V     {'':16.2} IR5={IR5:<8.3f} A\n"
+            f"K1=0 V           {'':16.2} IR1={IR1:<8.3f} A\n"
+            f"K2=0 V           {'':16.2} IR2={IR2:<8.3f} A\n"
+            f"K3={VR1:<5.3f} V       {'':16.2} IR3={IR3:<8.3f} A\n"
+            f"K4={(x[2]*R2):<5.3f} V       {'':16.2} IR4={IR4:<8.3f} A\n"
+            f"K5={V1:<5.3f} V      {'':16.2} IR5={IR5:<8.3f} A\n"
             f"K6={V1:<5.3f} V\n"
 
         )
@@ -826,7 +826,7 @@ entry_voltage2 = tk.Entry(root)
 
 
 # Button zum Berechnen der Matrix
-btn_berechnen = tk.Button(root, text="Berechnen", command=berechnen,width=71,height=5)
+btn_berechnen = tk.Button(root, text="Berechnen", command=berechnen,width=84,height=5)
 btn_berechnen.place(x=460, y=420)
 
 
